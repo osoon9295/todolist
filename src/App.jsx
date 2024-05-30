@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { useState } from "react";
+import uuid from "react-uuid";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [input, setInput] = useState("");
+  const [todoList, setTodoList] = useState([]);
+
+  const getInputValue = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleAddTodo = (e) => {
+    e.preventDefault();
+
+    const nextTodo = {
+      id: uuid(),
+      text: input,
+      isDone: false,
+    };
+
+    setTodoList([...todoList, nextTodo]);
+    setInput("");
+  };
+
+  const handleDeleteTodo = (id) => {
+    setTodoList(todoList.filter((todo) => id !== todo.id));
+  };
+
+  const handleChangeIsDone = (id) => {
+    setTodoList(
+      todoList.map((todo) =>
+        id === todo.id ? { ...todo, isDone: !todo.isDone } : todo
+      )
+    );
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <form onSubmit={handleAddTodo}>
+        <label>할 일 : </label>
+        <input type="text" value={input} onChange={getInputValue} />
+        <button type="submit"> 추가 </button>
+      </form>
+      <ul>
+        {todoList.map((todo) => {
+          return (
+            <li
+              key={todo.id}
+              style={{ textDecoration: todo.isDone ? "line-through" : "none" }}
+            >
+              <input
+                type="checkbox"
+                onChange={() => handleChangeIsDone(todo.id)}
+              />
+              {todo.text}
+              <button onClick={() => handleDeleteTodo(todo.id)}>삭제</button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
 
-export default App
+export default App;
