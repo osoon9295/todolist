@@ -1,23 +1,16 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { deleteTodo, toggleTodo } from "../redux/todosSlice";
 
-const TodoItem = ({ todo, setTodoList, todoList }) => {
-  const handleDeleteTodo = (id) => {
-    setTodoList(todoList.filter((todo) => id !== todo.id));
-  };
-
-  const handleChangeIsDone = (id) => {
-    setTodoList(
-      todoList.map((todo) =>
-        id === todo.id ? { ...todo, isDone: !todo.isDone } : todo
-      )
-    );
-  };
+const TodoItem = ({ todo }) => {
+  const dispatch = useDispatch();
+  console.log(todo);
 
   return (
     <li style={{ textDecoration: todo.isDone ? "line-through" : "none" }}>
-      <input type="checkbox" onChange={() => handleChangeIsDone(todo.id)} />
+      <input type="checkbox" onChange={() => dispatch(toggleTodo(todo.id))} />
       {todo.text}
-      <button onClick={() => handleDeleteTodo(todo.id)}>삭제</button>
+      <button onClick={() => dispatch(deleteTodo(todo.id))}>삭제</button>
     </li>
   );
 };

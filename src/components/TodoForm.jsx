@@ -1,9 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import uuid from "react-uuid";
+import { useDispatch } from "react-redux";
+import { addTodo } from "../redux/todosSlice";
 
-const todoForm = ({ todoList, setTodoList }) => {
+const todoForm = ({}) => {
   const [input, setInput] = useState("");
+  const dispatch = useDispatch();
 
   const getInputValue = (e) => {
     setInput(e.target.value);
@@ -12,14 +14,10 @@ const todoForm = ({ todoList, setTodoList }) => {
   const handleAddTodo = (e) => {
     e.preventDefault();
 
-    const nextTodo = {
-      id: uuid(),
-      text: input,
-      isDone: false,
-    };
-
-    setTodoList([...todoList, nextTodo]);
-    setInput("");
+    if (input.trim()) {
+      dispatch(addTodo(input));
+      setInput("");
+    }
   };
 
   return (
